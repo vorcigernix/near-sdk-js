@@ -1,3 +1,4 @@
+/// <reference types="./index.d.ts" />
 import { call, view, initialize, NearBindgen } from "./near-bindgen";
 import * as near from "./api";
 import { LookupMap, Vector, LookupSet, UnorderedMap, UnorderedSet, } from "./collections";
