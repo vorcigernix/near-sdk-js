@@ -1,32 +1,30 @@
-import { Bytes, bytes } from "../utils";
+import { bytes } from "../utils";
 import { base58 } from '@scure/base';
-
-export enum CurveType {
-    ED25519 = 0,
-    SECP256K1 = 1,
-}
-
-function data_len(c: CurveType): number {
+export var CurveType;
+(function (CurveType) {
+    CurveType[CurveType["ED25519"] = 0] = "ED25519";
+    CurveType[CurveType["SECP256K1"] = 1] = "SECP256K1";
+})(CurveType || (CurveType = {}));
+function data_len(c) {
     switch (c) {
         case CurveType.ED25519:
             return 32;
         case CurveType.SECP256K1:
             return 64;
         default:
-            throw new UnknownCurve()
+            throw new UnknownCurve();
     }
 }
-
-function split_key_type_data(value: string): [CurveType, string] {
+function split_key_type_data(value) {
     let idx = value.indexOf(":");
     if (idx >= 0) {
         return [curveTypeFromStr(value.substring(0, idx)), value.substring(idx + 1)];
-    } else {
+    }
+    else {
         return [CurveType.ED25519, value];
     }
 }
-
-export function curveTypeFromStr(value: string): CurveType {
+export function curveTypeFromStr(value) {
     switch (value) {
         case "ed25519":
             return CurveType.ED25519;
@@ -36,16 +34,18 @@ export function curveTypeFromStr(value: string): CurveType {
             throw new UnknownCurve();
     }
 }
-
-export class ParsePublicKeyError extends Error { }
+export class ParsePublicKeyError extends Error {
+}
 export class InvalidLengthError extends ParsePublicKeyError {
-    constructor(public length: number) {
+    constructor(length) {
         super(`Invalid length: ${length}`);
+        this.length = length;
     }
 }
 export class Base58Error extends ParsePublicKeyError {
-    constructor(public error: string) {
+    constructor(error) {
         super(`Base58 error: ${error}`);
+        this.error = error;
     }
 }
 export class UnknownCurve extends ParsePublicKeyError {
@@ -53,27 +53,26 @@ export class UnknownCurve extends ParsePublicKeyError {
         super("Unknown curve");
     }
 }
-
 export class PublicKey {
-    constructor(public data: Bytes) {
-        let curve_type = data.charCodeAt(0) as CurveType
-        let curve_len = data_len(curve_type)
+    constructor(data) {
+        this.data = data;
+        let curve_type = data.charCodeAt(0);
+        let curve_len = data_len(curve_type);
         if (data.length != curve_len + 1) {
-            throw new InvalidLengthError(data.length)
+            throw new InvalidLengthError(data.length);
         }
-        this.data = data
+        this.data = data;
     }
-
-    curveType(): CurveType {
-        return this.data.charCodeAt(0) as CurveType
+    curveType() {
+        return this.data.charCodeAt(0);
     }
-
-    static fromString(s: string) {
+    static fromString(s) {
         let [curve, key_data] = split_key_type_data(s);
-        let data: Bytes;
+        let data;
         try {
             data = bytes(base58.decode(key_data));
-        } catch (err: any) {
+        }
+        catch (err) {
             throw new Base58Error(err.message);
         }
         return new PublicKey(String.fromCharCode(curve) + data);

@@ -1,16 +1,14 @@
 {
+    "extends": "@tsconfig/deno/tsconfig.json",
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Deno",
     "compilerOptions": {
-        "esModuleInterop": true,
-        "lib": [
-            "es2015",
-            "esnext",
-            "dom"
-        ],
-        "module": "esnext",
+        "jsx": "react",
+        "lib": [],
+        "strictNullChecks": false,
         "target": "es2020",
         "moduleResolution": "node",
-        "alwaysStrict": true,
-        "outDir": "./lib",
+        "outDir": "./library",
         "declaration": true,
         "preserveSymlinks": true,
         "preserveWatchOutput": true,
@@ -22,7 +20,8 @@
         "noUnusedLocals": true,
         "experimentalDecorators": true,
         "resolveJsonModule": true,
-		"allowJs": true,
+        "strict": true,
+        "allowJs": true
     },
     "files": [
         "src/index.ts",
